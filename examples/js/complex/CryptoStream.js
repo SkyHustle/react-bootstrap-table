@@ -5,8 +5,37 @@ import React from 'react';
 import io from 'socket.io-client';
 import CCC from './ccc-streamer-utilities';
 
+const currentPrice = {};
+
+function dataUnpack(data) {
+  const from = data.FROMSYMBOL;
+  const to = data.TOSYMBOL;
+  // const fsym = CCC.STATIC.CURRENCY.getSymbol(from);
+  const tsym = CCC.STATIC.CURRENCY.getSymbol(to);
+  const pair = from + to;
+  console.log(data);
+
+  if (!currentPrice.hasOwnProperty(pair)) {
+    currentPrice.pair = {};
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    currentPrice.pair.key = data.key;
+  }
+
+  if (currentPrice.pair.LASTTRADEID) {
+    currentPrice.pair.LASTTRADEID = parseInt(currentPrice.pair.LASTTRADEID, 10).toFixed(0);
+  }
+  currentPrice.pair.CHANGE24HOUR = CCC.convertValueToDisplay(
+      tsym, (currentPrice.pair.PRICE - currentPrice.pair.OPEN24HOUR)
+    );
+  currentPrice.pair.CHANGE24HOURPCT = (
+    (currentPrice.pair.PRICE - currentPrice.pair.OPEN24HOUR) /
+     currentPrice.pair.OPEN24HOUR * 100).toFixed(2) + '%';
+  // displayData(currentPrice[pair], from, tsym, fsym);
+}
+
 function fetchData() {
-  // const currentPrice = {};
   const socket = io.connect('https://streamer.cryptocompare.com/');
   // Format: {SubscriptionId}~{ExchangeName}~{FromSymbol}~{ToSymbol}
   // Use SubscriptionId 0 for TRADE, 2 for CURRENT and 5 for CURRENTAGG
@@ -18,9 +47,8 @@ function fetchData() {
     let res = {};
     if (messageType === CCC.STATIC.TYPE.CURRENTAGG) {
       res = CCC.CURRENT.unpack(message);
-      // dataUnpack(res);
+      dataUnpack(res);
     }
-    console.log(res);
   });
 }
 
