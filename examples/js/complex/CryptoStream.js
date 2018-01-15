@@ -1,16 +1,13 @@
-require('./demo.css');
+require('./CryptoStream.css');
 import React from 'react';
-import App from './app';
-import CryptoStream from './CryptoStream';
 
-class Demo extends React.Component {
+class CryptoStream extends React.Component {
   render() {
     return (
       <div className='col-md-offset-1 col-md-8'>
         <div className='panel panel-default'>
           <div className='panel-body'>
-            <App />
-            <CryptoStream />
+            <h1>CryptoStream</h1>
           </div>
         </div>
       </div>
@@ -18,4 +15,4 @@ class Demo extends React.Component {
   }
 }
 
-export default Demo;
+export default CryptoStream;
