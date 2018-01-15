@@ -10,9 +10,9 @@ class Demo extends React.Component {
         <div className='panel panel-default'>
           <div className='panel-body'>
             <App />
-            <CryptoStream />
           </div>
         </div>
+        <CryptoStream />
       </div>
     );
   }
