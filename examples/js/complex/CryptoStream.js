@@ -1,5 +1,30 @@
+/* eslint no-console: 0 */
+/* eslint no-debugger: 0 */
 require('./CryptoStream.css');
 import React from 'react';
+import io from 'socket.io-client';
+import CCC from './ccc-streamer-utilities';
+
+function fetchData() {
+  // const currentPrice = {};
+  const socket = io.connect('https://streamer.cryptocompare.com/');
+  // Format: {SubscriptionId}~{ExchangeName}~{FromSymbol}~{ToSymbol}
+  // Use SubscriptionId 0 for TRADE, 2 for CURRENT and 5 for CURRENTAGG
+  // For aggregate quote updates use CCCAGG as market
+  const subscription = [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD' ];
+  socket.emit('SubAdd', { subs: subscription });
+  socket.on('m', function(message) {
+    const messageType = message.substring(0, message.indexOf('~'));
+    let res = {};
+    if (messageType === CCC.STATIC.TYPE.CURRENTAGG) {
+      res = CCC.CURRENT.unpack(message);
+      // dataUnpack(res);
+    }
+    console.log(res);
+  });
+}
+
+fetchData();
 
 class CryptoStream extends React.Component {
   render() {
@@ -14,7 +39,6 @@ class CryptoStream extends React.Component {
                   <h2 className='price-display'>BTC - USD
                     <span className='price' id='PRICE_BTC'></span>
                   </h2>
-
                   <h5>24h Change:
                     <span id='CHANGE24HOUR_BTC'></span><span id='CHANGE24HOURPCT_BTC'></span><br/>
                   </h5>
