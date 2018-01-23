@@ -17,14 +17,14 @@ function addProducts(quantity) {
   }
 }
 
-addProducts(5);
+addProducts(15);
 
 export default class App extends React.Component {
 
     constructor(props) {
       super(props);
       this.state = {
-        key: 2
+        key: 1
       };
     }
 
@@ -50,13 +50,20 @@ export default class App extends React.Component {
     }
 
     render() {
+      const tableOptions = {
+        prePage: <i className='glyphicon glyphicon-chevron-left' />,
+        nextPage: <i className='glyphicon glyphicon-chevron-right' />,
+        firstPage: <i className='glyphicon glyphicon-step-backward' />,
+        lastPage: <i className='glyphicon glyphicon-step-forward' />
+      };
+
       return (
         <Tabs id='tabs' activeKey={ this.state.key } onSelect={ this.handleTabChange } animation>
           <Tab eventKey={ 1 } title='All'>
-            <BootstrapTable ref='table1' data={ products }>
+            <BootstrapTable ref='table1' data={ products } options={ tableOptions } pagination>
               <TableHeaderColumn dataField='id' isKey dataSort>Product ID</TableHeaderColumn>
               <TableHeaderColumn dataField='name' width='300' dataSort>Product Name</TableHeaderColumn>
-              <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
+              <TableHeaderColumn dataField='price' dataSort>Product Price</TableHeaderColumn>
             </BootstrapTable>
           </Tab>
           <Tab eventKey={ 2 } title='Coins'>
