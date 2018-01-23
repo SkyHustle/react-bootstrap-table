@@ -1,5 +1,4 @@
-/* eslint no-console: 0 */
-/* eslint no-debugger: 0 */
+/* eslint guard-for-in: 0 */
 require('./CryptoStream.css');
 import React from 'react';
 import io from 'socket.io-client';
@@ -52,28 +51,30 @@ function dataUnpack(data) {
   const fsym = CCC.STATIC.CURRENCY.getSymbol(from);
   const tsym = CCC.STATIC.CURRENCY.getSymbol(to);
   const pair = from + to;
-  console.log(data);
 
+  // Do NOT use dot notionation for currentPrice[pair]
   if (!currentPrice.hasOwnProperty(pair)) {
-    currentPrice.pair = {};
+    currentPrice[pair] = {};
   }
 
   for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      currentPrice.pair[key] = data[key];
-    }
+    currentPrice[pair][key] = data[key];
   }
 
-  if (currentPrice.pair.LASTTRADEID) {
-    currentPrice.pair.LASTTRADEID = parseInt(currentPrice.pair.LASTTRADEID, 10).toFixed(0);
+  if (currentPrice[pair].LASTTRADEID) {
+    currentPrice[pair].LASTTRADEID =
+    parseInt(currentPrice[pair].LASTTRADEID, 10).toFixed(0);
   }
-  currentPrice.pair.CHANGE24HOUR = CCC.convertValueToDisplay(
-      tsym, (currentPrice.pair.PRICE - currentPrice.pair.OPEN24HOUR)
+
+  currentPrice[pair].CHANGE24HOUR = CCC.convertValueToDisplay(
+      tsym, (currentPrice[pair].PRICE - currentPrice[pair].OPEN24HOUR)
     );
-  currentPrice.pair.CHANGE24HOURPCT = (
-    (currentPrice.pair.PRICE - currentPrice.pair.OPEN24HOUR) /
-     currentPrice.pair.OPEN24HOUR * 100).toFixed(2) + '%';
-  displayData(currentPrice.pair, from, tsym, fsym);
+
+  currentPrice[pair].CHANGE24HOURPCT = (
+    (currentPrice[pair].PRICE - currentPrice[pair].OPEN24HOUR) /
+    currentPrice[pair].OPEN24HOUR * 100).toFixed(2) + '%';
+
+  displayData(currentPrice[pair], from, tsym, fsym);
 }
 
 function fetchData() {
@@ -81,7 +82,7 @@ function fetchData() {
   // Format: {SubscriptionId}~{ExchangeName}~{FromSymbol}~{ToSymbol}
   // Use SubscriptionId 0 for TRADE, 2 for CURRENT and 5 for CURRENTAGG
   // For aggregate quote updates use CCCAGG as market
-  const subscription = [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD' ];
+  const subscription = [ '5~CCCAGG~BTC~USD' ];
   socket.emit('SubAdd', { subs: subscription });
   socket.on('m', function(message) {
     const messageType = message.substring(0, message.indexOf('~'));
