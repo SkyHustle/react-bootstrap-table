@@ -1,135 +1,75 @@
-/* eslint no-unused-vars: 0 */
-/* eslint no-console: 0 */
-/* eslint space-infix-ops: 0 */
 /* eslint max-len: 0 */
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { Tabs, Tab } from 'react-bootstrap';
 
+const products = [];
 
-const jobs = [];
-
-function addJobs(quantity) {
-  const startId = jobs.length;
+function addProducts(quantity) {
+  const startId = products.length;
   for (let i = 0; i < quantity; i++) {
     const id = startId + i;
-    let priority = 'D';
-    if (i % 2 === 0) priority = 'C';
-    if (i % 5 === 0) priority = 'B';
-    if (i % 7 === 0) priority = 'A';
-    jobs.push({
+    products.push({
       id: id,
       name: 'Item name ' + id,
-      priority: priority,
-      active: i%2 === 0 ? 'Y' : 'N'
+      price: 2100 + i
     });
   }
 }
 
-addJobs(70);
-
-function onRowSelect(row, isSelected) {
-  console.log(row);
-  console.log(`selected: ${isSelected}`);
-}
-
-function onSelectAll(isSelected) {
-  console.log(`is select all: ${isSelected}`);
-}
-
-function onAfterSaveCell(row, cellName, cellValue) {
-  console.log(`Save cell ${cellName} with value ${cellValue}`);
-  console.log('The whole row :');
-  console.log(row);
-}
-
-function onAfterTableComplete() {
-  console.log('Table render complete.');
-}
-
-function onAfterDeleteRow(rowKeys) {
-  console.log('onAfterDeleteRow');
-  console.log(rowKeys);
-}
-
-function onAfterInsertRow(row) {
-  console.log('onAfterInsertRow');
-  console.log(row);
-}
-
-const selectRowProp = {
-  mode: 'checkbox',
-  clickToSelect: true,
-  selected: [], // default select on table
-  bgColor: 'rgb(238, 193, 213)',
-  onSelect: onRowSelect,
-  onSelectAll: onSelectAll
-};
-
-const cellEditProp = {
-  mode: 'click',
-  blurToSave: true,
-  afterSaveCell: onAfterSaveCell
-};
-
-const options = {
-  paginationShowsTotal: true,
-  sortName: 'name',  // default sort column name
-  sortOrder: 'desc',  // default sort order
-  afterTableComplete: onAfterTableComplete, // A hook for after table render complete.
-  afterDeleteRow: onAfterDeleteRow,  // A hook for after droping rows.
-  afterInsertRow: onAfterInsertRow   // A hook for after insert rows
-};
-
-
-function priorityFormatter(cell, row) {
-  if (cell === 'A') return '<font color="red">' + cell + '</font>';
-  else if (cell === 'B') return '<font color="orange">' + cell + '</font>';
-  else return cell;
-}
-
-function trClassNameFormat(rowData, rIndex) {
-  return rIndex % 3 === 0 ? 'third-tr' : '';
-}
-function nameValidator(value) {
-  if (!value) {
-    return 'Job Name is required!';
-  } else if (value.length < 3) {
-    return 'Job Name length must great 3 char';
-  }
-  return true;
-}
-function priorityValidator(value) {
-  if (!value) {
-    return 'Priority is required!';
-  }
-  return true;
-}
+addProducts(5);
 
 export default class App extends React.Component {
-  render() {
-    return (
-      <BootstrapTable data={ jobs }
-        trClassName={ trClassNameFormat }
-        selectRow={ selectRowProp }
-        cellEdit={ cellEditProp }
-        options={ options }
-        insertRow
-        deleteRow
-        search
-        columnFilter
-        hover
-        pagination>
-        <TableHeaderColumn dataField='id' dataAlign='center' dataSort isKey autoValue>Job ID</TableHeaderColumn>
-        <TableHeaderColumn dataField='name' className='good' dataSort
-          editable={ { type: 'textarea', validator: nameValidator } }>Job Name</TableHeaderColumn>
-        <TableHeaderColumn dataField='priority' dataSort dataFormat={ priorityFormatter }
-          editable={ {
-            type: 'select',
-            options: { values: [ 'A', 'B', 'C', 'D' ] },
-            validator: priorityValidator } }>Job Priority</TableHeaderColumn>
-        <TableHeaderColumn dataField='active'
-          editable={ { type: 'checkbox', options: { values: ' Y:N' } } }>Active</TableHeaderColumn>
-      </BootstrapTable>
-    );
-  }
+
+    constructor(props) {
+      super(props);
+      this.state = {
+        key: 2
+      };
+    }
+
+    handleTabChange = (key) => {
+      this.setState({
+        key
+      }, () => {
+        /*
+         * If you enable animation in react-bootstrap tab
+         * please remember to call forceUpdate in async call.
+         * If disable animation, call forceUpdate directly.
+         */
+        if (key === 1) {
+          setTimeout(() => {
+            this.refs.table1.forceUpdate();
+          }, 500);
+        } else if (key === 2) {
+          setTimeout(() => {
+            this.refs.table2.forceUpdate();
+          }, 500);
+        }
+      });
+    }
+
+    render() {
+      return (
+        <Tabs id='tabs' activeKey={ this.state.key } onSelect={ this.handleTabChange } animation>
+          <Tab eventKey={ 1 } title='All'>
+            <BootstrapTable ref='table1' data={ products }>
+              <TableHeaderColumn dataField='id' isKey dataSort>Product ID</TableHeaderColumn>
+              <TableHeaderColumn dataField='name' width='300' dataSort>Product Name</TableHeaderColumn>
+              <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
+            </BootstrapTable>
+          </Tab>
+          <Tab eventKey={ 2 } title='Coins'>
+            <BootstrapTable ref='table2' data={ products }>
+              <TableHeaderColumn dataField='id' isKey dataSort>Product ID</TableHeaderColumn>
+              <TableHeaderColumn dataField='name' width='300' dataSort>Product Name</TableHeaderColumn>
+              <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
+              <TableHeaderColumn dataField='price' width='90'>Product Price</TableHeaderColumn>
+            </BootstrapTable>
+          </Tab>
+          <Tab eventKey={ 3 } title='Tokens'>Tab 3 content</Tab>
+          <Tab eventKey={ 4 } title='Portfolio'>Portfolio Here</Tab>
+        </Tabs>
+      );
+    }
 }
