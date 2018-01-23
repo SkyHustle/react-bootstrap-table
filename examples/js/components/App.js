@@ -79,6 +79,9 @@ class App extends React.Component {
       text: 'A complex demo',
       href: 'complex'
     }, {
+      text: 'Crypto',
+      href: 'crypto'
+    }, {
       text: 'Custom',
       href: 'custom'
     } ];

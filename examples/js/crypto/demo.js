@@ -1,6 +1,7 @@
 require('./demo.css');
 import React from 'react';
 import App from './app';
+import CryptoStream from './CryptoStream';
 
 class Demo extends React.Component {
   render() {
@@ -11,6 +12,7 @@ class Demo extends React.Component {
             <App />
           </div>
         </div>
+        <CryptoStream />
       </div>
     );
   }

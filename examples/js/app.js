@@ -20,6 +20,7 @@ import Style from './style/demo';
 import Advance from './advance/demo';
 import Other from './others/demo';
 import Complex from './complex/demo';
+import Crypto from './crypto/demo';
 import Remote from './remote/demo';
 import Expand from './expandRow/demo';
 import Custom from './custom/demo';
@@ -49,6 +50,7 @@ const renderApp = () => {
             <Route path='advance' component={ Advance } />
             <Route path='others' component={ Other } />
             <Route path='complex' component={ Complex } />
+            <Route path='crypto' component={ Crypto } />
             <Route path='remote' component={ Remote } />
             <Route path='custom' component={ Custom } />
             <Route path='expandRow' component={ Expand } />
