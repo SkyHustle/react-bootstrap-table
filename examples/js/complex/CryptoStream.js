@@ -82,7 +82,7 @@ function fetchData() {
   // Format: {SubscriptionId}~{ExchangeName}~{FromSymbol}~{ToSymbol}
   // Use SubscriptionId 0 for TRADE, 2 for CURRENT and 5 for CURRENTAGG
   // For aggregate quote updates use CCCAGG as market
-  const subscription = [ '5~CCCAGG~BTC~USD' ];
+  const subscription = [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD' ];
   socket.emit('SubAdd', { subs: subscription });
   socket.on('m', function(message) {
     const messageType = message.substring(0, message.indexOf('~'));
@@ -124,6 +124,33 @@ class CryptoStream extends React.Component {
                   <h5>Last Trade Volume To: <span id='LASTVOLUMETO_BTC'></span><br/></h5>
                   <h5>24h Volume: <span id='VOLUME24HOUR_BTC'></span><br/></h5>
                   <h5>24h VolumeTo: <span id='VOLUME24HOURTO_BTC'></span><br/></h5>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='col-md-5 price-boxes'>
+            <div className='panel-group'>
+              <div className='panel panel-default'>
+                <div className='panel-body'>
+                  <h6><a href='https://www.cryptocompare.com'>Source: CryptoCompare.com</a></h6>
+                  <h2 className='price-display'>ETH - USD
+                    <span className='price' id='PRICE_ETH'></span>
+                  </h2>
+                  <h5>24h Change:
+                    <span id='CHANGE24HOUR_ETH'></span><span id='CHANGE24HOURPCT_ETH'></span><br/>
+                  </h5>
+                  <h5>Last Market: <span className='exchange' id='LASTMARKET_ETH'></span> <br/></h5>
+                  <h5>Trade ID: <span id='LASTTRADEID_ETH'></span><br/></h5>
+                  <h5>Open Hour: <span id='OPENHOUR_ETH'></span><br/></h5>
+                  <h5>High Hour: <span id='HIGHHOUR_ETH'></span><br/></h5>
+                  <h5>Low Hour: <span id='LOWHOUR_ETH'></span><br/></h5>
+                  <h5>Open Day: <span id='OPEN24HOUR_ETH'></span><br/></h5>
+                  <h5>High Day: <span id='HIGH24HOUR_ETH'></span><br/></h5>
+                  <h5>Low Day: <span id='LOW24HOUR_ETH'></span><br/></h5>
+                  <h5>Last Trade Volume: <span id='LASTVOLUME_ETH'></span><br/></h5>
+                  <h5>Last Trade Volume To: <span id='LASTVOLUMETO_ETH'></span><br/></h5>
+                  <h5>24h Volume: <span id='VOLUME24HOUR_ETH'></span><br/></h5>
+                  <h5>24h VolumeTo: <span id='VOLUME24HOURTO_ETH'></span><br/></h5>
                 </div>
               </div>
             </div>
