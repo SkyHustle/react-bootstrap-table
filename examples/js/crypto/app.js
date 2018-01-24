@@ -30,7 +30,8 @@ export default class App extends React.Component {
       super(props);
       this.state = {
         key: 1,
-        currentPrice: {}
+        currentPrice: {},
+        cryptos: []
       };
       // this.dataUnpack = this.dataUnpack.bind(this);
     }
@@ -39,7 +40,7 @@ export default class App extends React.Component {
       const currentPrice = this.state.currentPrice;
       const from = data.FROMSYMBOL;
       const to = data.TOSYMBOL;
-      const fsym = CCC.STATIC.CURRENCY.getSymbol(from);
+      // const fsym = CCC.STATIC.CURRENCY.getSymbol(from);
       const tsym = CCC.STATIC.CURRENCY.getSymbol(to);
       const pair = from + to;
 
@@ -65,7 +66,15 @@ export default class App extends React.Component {
         (currentPrice[pair].PRICE - currentPrice[pair].OPEN24HOUR) /
         currentPrice[pair].OPEN24HOUR * 100).toFixed(2) + '%';
 
-      console.log(currentPrice[pair], from, tsym, fsym);
+      // console.log(currentPrice[pair], from, tsym, fsym);
+      // Check cryptos array for like objects and replace each crypto with updated version
+      const indexOfCrypto = this.state.cryptos.indexOf(currentPrice[pair]);
+      if (indexOfCrypto === -1) {
+        this.state.cryptos.push(currentPrice[pair]);
+      } else {
+        this.state.cryptos[indexOfCrypto] = currentPrice[pair];
+      }
+      console.log(this.state.cryptos);
     }
 
     componentDidMount = () => {
