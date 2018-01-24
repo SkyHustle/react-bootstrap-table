@@ -133,6 +133,8 @@ export default class App extends React.Component {
               <TableHeaderColumn dataField='PRICE' columnClassName={ this.handlePriceDirection } dataSort>Price</TableHeaderColumn>
               <TableHeaderColumn dataField='CHANGE24HOUR' columnClassName={ this.handlePriceChange } dataSort>Change (24h$)</TableHeaderColumn>
               <TableHeaderColumn dataField='CHANGE24HOURPCT' columnClassName={ this.handlePriceChange } dataSort>Change (24h%)</TableHeaderColumn>
+              <TableHeaderColumn dataField='VOLUME24HOURTO' dataSort>Volume (24h$)</TableHeaderColumn>
+              <TableHeaderColumn dataField='LASTMARKET' dataSort>Exchange</TableHeaderColumn>
             </BootstrapTable>
           </Tab>
           <Tab eventKey={ 2 } title='Coins'>Table of Coins</Tab>
