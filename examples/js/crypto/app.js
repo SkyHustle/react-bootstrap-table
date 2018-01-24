@@ -94,6 +94,7 @@ export default class App extends React.Component {
     }
 
     handlePriceDirection = (priceChange) => {
+      // Check to see if price has a '-'
       if (/[-]/.test(priceChange)) {
         return 'down';
       } else {
@@ -117,7 +118,7 @@ export default class App extends React.Component {
             <BootstrapTable ref='allTable' data={ this.state.cryptos } options={ tableOptions } pagination search>
               <TableHeaderColumn dataField='FROMSYMBOL' isKey dataSort>Symbol</TableHeaderColumn>
               <TableHeaderColumn dataField='PRICE' width='300' dataSort>Price</TableHeaderColumn>
-              <TableHeaderColumn dataField='CHANGE24HOUR' columnClassName={ this.handlePriceDirection.bind(this) } dataSort>Change (24h$)</TableHeaderColumn>
+              <TableHeaderColumn dataField='CHANGE24HOUR' columnClassName={ this.handlePriceDirection } dataSort>Change (24h$)</TableHeaderColumn>
               <TableHeaderColumn dataField='CHANGE24HOURPCT' columnClassName={ this.handlePriceDirection } dataSort>Change (24h%)</TableHeaderColumn>
             </BootstrapTable>
           </Tab>
