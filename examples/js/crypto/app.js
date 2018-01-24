@@ -31,7 +31,8 @@ export default class App extends React.Component {
       this.state = {
         key: 1,
         currentPrice: {},
-        cryptos: []
+        cryptos: [],
+        subscription: [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD', '5~CCCAGG~XRP~USD', '5~CCCAGG~LTC~USD' ]
       };
       // this.dataUnpack = this.dataUnpack.bind(this);
     }
@@ -75,6 +76,7 @@ export default class App extends React.Component {
         this.state.cryptos[indexOfCrypto] = currentPrice[pair];
       }
       console.log(this.state.cryptos);
+      this.setState({ cryptos: this.state.cryptos });
     }
 
     componentDidMount = () => {
@@ -84,8 +86,7 @@ export default class App extends React.Component {
       // Format: {SubscriptionId}~{ExchangeName}~{FromSymbol}~{ToSymbol}
       // Use SubscriptionId 0 for TRADE, 2 for CURRENT and 5 for CURRENTAGG
       // For aggregate quote updates use CCCAGG as market
-      const subscription = [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD' ];
-      socket.emit('SubAdd', { subs: subscription });
+      socket.emit('SubAdd', { subs: this.state.subscription });
       const that = this;
       socket.on('m', (message) => {
         const messageType = message.substring(0, message.indexOf('~'));
@@ -98,7 +99,7 @@ export default class App extends React.Component {
     }
 
     handleStopStream = () => {
-      socket.emit('SubRemove', { subs: [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD' ] } );
+      socket.emit('SubRemove', { subs: this.state.subscription } );
     }
 
     handleTabChange = (key) => {
@@ -120,10 +121,11 @@ export default class App extends React.Component {
           <Tab eventKey={ 1 } title='All'>
             <button type='button' onClick={ this.handleStartStream } className='btn btn-success'>Start Stream</button>
             <button type='button' onClick={ this.handleStopStream } className='btn btn-danger'>Stop Stream</button>
-            <BootstrapTable ref='allTable' data={ products } options={ tableOptions } pagination search>
-              <TableHeaderColumn dataField='id' isKey dataSort>Product ID</TableHeaderColumn>
-              <TableHeaderColumn dataField='name' width='300' dataSort>Product Name</TableHeaderColumn>
-              <TableHeaderColumn dataField='price' dataSort>Product Price</TableHeaderColumn>
+            <BootstrapTable ref='allTable' data={ this.state.cryptos } options={ tableOptions } pagination search>
+              <TableHeaderColumn dataField='FROMSYMBOL' isKey dataSort>Symbol</TableHeaderColumn>
+              <TableHeaderColumn dataField='PRICE' width='300' dataSort>Price</TableHeaderColumn>
+              <TableHeaderColumn dataField='CHANGE24HOUR' dataSort>Change (24h)</TableHeaderColumn>
+              <TableHeaderColumn dataField='CHANGE24HOURPCT' dataSort>Change (24h%)</TableHeaderColumn>
             </BootstrapTable>
           </Tab>
           <Tab eventKey={ 2 } title='Coins'>Table of Coins</Tab>
