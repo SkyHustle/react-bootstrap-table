@@ -1,6 +1,7 @@
 /* eslint max-len: 0 */
 /* eslint guard-for-in: 0 */
 /* eslint no-console: 0 */
+/* eslint-disable */
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -93,7 +94,18 @@ export default class App extends React.Component {
       });
     }
 
-    handlePriceDirection = (priceChange) => {
+    handlePriceDirection = (price, cryptoObject) => {
+      // 1 = Price Up, 2 = Price Down, 4 = Price Unchanged
+      if (cryptoObject.FLAGS === '1') {
+        return 'up';
+      } else if (cryptoObject.FLAGS === '2') {
+        return 'down';
+      } else if (cryptoObject.FLAGS === '4') {
+        return 'unchanged';
+      }
+    }
+
+    handlePriceChange = (priceChange) => {
       // Check to see if price has a '-'
       if (/[-]/.test(priceChange)) {
         return 'down';
@@ -115,11 +127,12 @@ export default class App extends React.Component {
           <Tab eventKey={ 1 } title='All'>
             <button type='button' onClick={ this.handleStartStream } className='btn btn-success'>Start Stream</button>
             <button type='button' onClick={ this.handleStopStream } className='btn btn-danger'>Stop Stream</button>
+
             <BootstrapTable ref='allTable' data={ this.state.cryptos } options={ tableOptions } pagination search>
               <TableHeaderColumn dataField='FROMSYMBOL' isKey dataSort>Symbol</TableHeaderColumn>
-              <TableHeaderColumn dataField='PRICE' width='300' dataSort>Price</TableHeaderColumn>
-              <TableHeaderColumn dataField='CHANGE24HOUR' columnClassName={ this.handlePriceDirection } dataSort>Change (24h$)</TableHeaderColumn>
-              <TableHeaderColumn dataField='CHANGE24HOURPCT' columnClassName={ this.handlePriceDirection } dataSort>Change (24h%)</TableHeaderColumn>
+              <TableHeaderColumn dataField='PRICE' columnClassName={ this.handlePriceDirection } dataSort>Price</TableHeaderColumn>
+              <TableHeaderColumn dataField='CHANGE24HOUR' columnClassName={ this.handlePriceChange } dataSort>Change (24h$)</TableHeaderColumn>
+              <TableHeaderColumn dataField='CHANGE24HOURPCT' columnClassName={ this.handlePriceChange } dataSort>Change (24h%)</TableHeaderColumn>
             </BootstrapTable>
           </Tab>
           <Tab eventKey={ 2 } title='Coins'>Table of Coins</Tab>
