@@ -1,7 +1,6 @@
 /* eslint max-len: 0 */
 /* eslint guard-for-in: 0 */
 /* eslint no-console: 0 */
-/* eslint-disable */
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { Tabs, Tab } from 'react-bootstrap';
@@ -114,6 +113,11 @@ export default class App extends React.Component {
       }
     }
 
+    handleFormatVolume = (volume) => {
+      const n = parseFloat(volume).toFixed(2);
+      return Number(n).toLocaleString('en');
+    }
+
     render() {
       const tableOptions = {
         prePage: <i className='glyphicon glyphicon-chevron-left' />,
@@ -133,7 +137,7 @@ export default class App extends React.Component {
               <TableHeaderColumn dataField='PRICE' columnClassName={ this.handlePriceDirection } dataSort>Price</TableHeaderColumn>
               <TableHeaderColumn dataField='CHANGE24HOUR' columnClassName={ this.handlePriceChange } dataSort>Change (24h$)</TableHeaderColumn>
               <TableHeaderColumn dataField='CHANGE24HOURPCT' columnClassName={ this.handlePriceChange } dataSort>Change (24h%)</TableHeaderColumn>
-              <TableHeaderColumn dataField='VOLUME24HOURTO' dataSort>Volume (24h$)</TableHeaderColumn>
+              <TableHeaderColumn dataField='VOLUME24HOURTO' dataFormat={ this.handleFormatVolume } dataSort>Volume (24h$)</TableHeaderColumn>
               <TableHeaderColumn dataField='LASTMARKET' dataSort>Exchange</TableHeaderColumn>
             </BootstrapTable>
           </Tab>
