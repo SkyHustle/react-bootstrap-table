@@ -6,7 +6,7 @@ import CryptoStream from './CryptoStream';
 class Demo extends React.Component {
   render() {
     return (
-      <div className='col-md-offset-1 col-md-8'>
+      <div className='col-md-offset-1 col-md-10'>
         <div className='panel panel-default'>
           <div className='panel-body'>
             <App />

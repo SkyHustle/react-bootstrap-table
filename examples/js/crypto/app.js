@@ -31,21 +31,6 @@ export default class App extends React.Component {
     handleTabChange = (key) => {
       this.setState({
         key
-      }, () => {
-        /*
-         * If you enable animation in react-bootstrap tab
-         * please remember to call forceUpdate in async call.
-         * If disable animation, call forceUpdate directly.
-         */
-        if (key === 1) {
-          setTimeout(() => {
-            this.refs.table1.forceUpdate();
-          }, 500);
-        } else if (key === 2) {
-          setTimeout(() => {
-            this.refs.table2.forceUpdate();
-          }, 500);
-        }
       });
     }
 
@@ -60,22 +45,15 @@ export default class App extends React.Component {
       return (
         <Tabs id='tabs' activeKey={ this.state.key } onSelect={ this.handleTabChange } animation>
           <Tab eventKey={ 1 } title='All'>
-            <BootstrapTable ref='table1' data={ products } options={ tableOptions } pagination>
+            <BootstrapTable ref='allTable' data={ products } options={ tableOptions } pagination search>
               <TableHeaderColumn dataField='id' isKey dataSort>Product ID</TableHeaderColumn>
               <TableHeaderColumn dataField='name' width='300' dataSort>Product Name</TableHeaderColumn>
               <TableHeaderColumn dataField='price' dataSort>Product Price</TableHeaderColumn>
             </BootstrapTable>
           </Tab>
-          <Tab eventKey={ 2 } title='Coins'>
-            <BootstrapTable ref='table2' data={ products }>
-              <TableHeaderColumn dataField='id' isKey dataSort>Product ID</TableHeaderColumn>
-              <TableHeaderColumn dataField='name' width='300' dataSort>Product Name</TableHeaderColumn>
-              <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
-              <TableHeaderColumn dataField='price' width='90'>Product Price</TableHeaderColumn>
-            </BootstrapTable>
-          </Tab>
-          <Tab eventKey={ 3 } title='Tokens'>Tab 3 content</Tab>
-          <Tab eventKey={ 4 } title='Portfolio'>Portfolio Here</Tab>
+          <Tab eventKey={ 2 } title='Coins'>Table of Coins</Tab>
+          <Tab eventKey={ 3 } title='Tokens'>Table of Tokens</Tab>
+          <Tab eventKey={ 4 } title='Portfolio'>Portfolio Table</Tab>
         </Tabs>
       );
     }
