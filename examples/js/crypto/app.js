@@ -4,8 +4,9 @@
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { Tabs, Tab } from 'react-bootstrap';
-import io from 'socket.io-client';
 import CCC from './ccc-streamer-utilities';
+import io from 'socket.io-client';
+const socket = io.connect('https://streamer.cryptocompare.com/');
 
 const products = [];
 
@@ -31,10 +32,10 @@ export default class App extends React.Component {
         key: 1,
         currentPrice: {}
       };
-      this.dataUnpack = this.dataUnpack.bind(this);
+      // this.dataUnpack = this.dataUnpack.bind(this);
     }
 
-    dataUnpack(data) {
+    dataUnpack = (data) => {
       const currentPrice = this.state.currentPrice;
       const from = data.FROMSYMBOL;
       const to = data.TOSYMBOL;
@@ -67,8 +68,10 @@ export default class App extends React.Component {
       console.log(currentPrice[pair], from, tsym, fsym);
     }
 
-    componentDidMount() {
-      const socket = io.connect('https://streamer.cryptocompare.com/');
+    componentDidMount = () => {
+    }
+
+    handleStartStream = () => {
       // Format: {SubscriptionId}~{ExchangeName}~{FromSymbol}~{ToSymbol}
       // Use SubscriptionId 0 for TRADE, 2 for CURRENT and 5 for CURRENTAGG
       // For aggregate quote updates use CCCAGG as market
@@ -83,6 +86,10 @@ export default class App extends React.Component {
           that.dataUnpack(res);
         }
       });
+    }
+
+    handleStopStream = () => {
+      socket.emit('SubRemove', { subs: [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD' ] } );
     }
 
     handleTabChange = (key) => {
@@ -102,6 +109,8 @@ export default class App extends React.Component {
       return (
         <Tabs id='tabs' activeKey={ this.state.key } onSelect={ this.handleTabChange } animation>
           <Tab eventKey={ 1 } title='All'>
+            <button type='button' onClick={ this.handleStartStream } className='btn btn-success'>Start Stream</button>
+            <button type='button' onClick={ this.handleStopStream } className='btn btn-danger'>Stop Stream</button>
             <BootstrapTable ref='allTable' data={ products } options={ tableOptions } pagination search>
               <TableHeaderColumn dataField='id' isKey dataSort>Product ID</TableHeaderColumn>
               <TableHeaderColumn dataField='name' width='300' dataSort>Product Name</TableHeaderColumn>
