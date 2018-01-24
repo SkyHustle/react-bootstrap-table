@@ -8,22 +8,6 @@ import CCC from './ccc-streamer-utilities';
 import io from 'socket.io-client';
 const socket = io.connect('https://streamer.cryptocompare.com/');
 
-const products = [];
-
-function addProducts(quantity) {
-  const startId = products.length;
-  for (let i = 0; i < quantity; i++) {
-    const id = startId + i;
-    products.push({
-      id: id,
-      name: 'Item name ' + id,
-      price: 2100 + i
-    });
-  }
-}
-
-addProducts(15);
-
 export default class App extends React.Component {
 
     constructor(props) {
@@ -32,6 +16,7 @@ export default class App extends React.Component {
         key: 1,
         currentPrice: {},
         cryptos: [],
+        direction: 'down',
         subscription: [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD', '5~CCCAGG~XRP~USD', '5~CCCAGG~LTC~USD' ]
       };
       // this.dataUnpack = this.dataUnpack.bind(this);
@@ -108,6 +93,14 @@ export default class App extends React.Component {
       });
     }
 
+    handlePriceDirection = (priceChange) => {
+      if (/[-]/.test(priceChange)) {
+        return 'down';
+      } else {
+        return 'up';
+      }
+    }
+
     render() {
       const tableOptions = {
         prePage: <i className='glyphicon glyphicon-chevron-left' />,
@@ -124,8 +117,8 @@ export default class App extends React.Component {
             <BootstrapTable ref='allTable' data={ this.state.cryptos } options={ tableOptions } pagination search>
               <TableHeaderColumn dataField='FROMSYMBOL' isKey dataSort>Symbol</TableHeaderColumn>
               <TableHeaderColumn dataField='PRICE' width='300' dataSort>Price</TableHeaderColumn>
-              <TableHeaderColumn dataField='CHANGE24HOUR' dataSort>Change (24h)</TableHeaderColumn>
-              <TableHeaderColumn dataField='CHANGE24HOURPCT' dataSort>Change (24h%)</TableHeaderColumn>
+              <TableHeaderColumn dataField='CHANGE24HOUR' columnClassName={ this.handlePriceDirection.bind(this) } dataSort>Change (24h$)</TableHeaderColumn>
+              <TableHeaderColumn dataField='CHANGE24HOURPCT' columnClassName={ this.handlePriceDirection } dataSort>Change (24h%)</TableHeaderColumn>
             </BootstrapTable>
           </Tab>
           <Tab eventKey={ 2 } title='Coins'>Table of Coins</Tab>
