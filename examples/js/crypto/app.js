@@ -5,11 +5,14 @@ import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { Tabs, Tab } from 'react-bootstrap';
 import CCC from './ccc-streamer-utilities';
+
+// Format: {SubscriptionId}~{ExchangeName}~{FromSymbol}~{ToSymbol}
+// Use SubscriptionId 0 for TRADE, 2 for CURRENT and 5 for CURRENTAGG
+// For aggregate quote updates use CCCAGG as market
 import io from 'socket.io-client';
 const socket = io.connect('https://streamer.cryptocompare.com/');
 
 export default class App extends React.Component {
-
     constructor(props) {
       super(props);
       this.state = {
@@ -17,7 +20,7 @@ export default class App extends React.Component {
         currentPrice: {},
         cryptos: [],
         direction: 'down',
-        subscription: [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD', '5~CCCAGG~XRP~USD', '5~CCCAGG~LTC~USD' ]
+        subscription: [ '5~CCCAGG~BTC~USD', '5~CCCAGG~ETH~USD', '5~CCCAGG~PIVX~USD', '5~CCCAGG~LTC~USD', '5~CCCAGG~BCH~USD', '5~CCCAGG~DASH~USD', '5~CCCAGG~LSK~USD', '5~CCCAGG~DCR~USD', '5~CCCAGG~SNT~USD', '5~CCCAGG~IOT~USD', '5~CCCAGG~VEN~USD', '5~CCCAGG~XRP~USD', '5~CCCAGG~ADA~USD' ]
       };
       // this.dataUnpack = this.dataUnpack.bind(this);
     }
@@ -64,13 +67,7 @@ export default class App extends React.Component {
       this.setState({ cryptos: this.state.cryptos });
     }
 
-    componentDidMount = () => {
-    }
-
     handleStartStream = () => {
-      // Format: {SubscriptionId}~{ExchangeName}~{FromSymbol}~{ToSymbol}
-      // Use SubscriptionId 0 for TRADE, 2 for CURRENT and 5 for CURRENTAGG
-      // For aggregate quote updates use CCCAGG as market
       socket.emit('SubAdd', { subs: this.state.subscription });
       const that = this;
       socket.on('m', (message) => {
@@ -115,7 +112,7 @@ export default class App extends React.Component {
 
     handleFormatVolume = (volume) => {
       const n = parseFloat(volume).toFixed(2);
-      return Number(n).toLocaleString('en');
+      return '$ ' + Number(n).toLocaleString('en');
     }
 
     render() {
@@ -133,12 +130,36 @@ export default class App extends React.Component {
             <button type='button' onClick={ this.handleStopStream } className='btn btn-danger'>Stop Stream</button>
 
             <BootstrapTable ref='allTable' data={ this.state.cryptos } options={ tableOptions } pagination search>
-              <TableHeaderColumn dataField='FROMSYMBOL' isKey dataSort>Symbol</TableHeaderColumn>
-              <TableHeaderColumn dataField='PRICE' columnClassName={ this.handlePriceDirection } dataSort>Price</TableHeaderColumn>
-              <TableHeaderColumn dataField='CHANGE24HOUR' columnClassName={ this.handlePriceChange } dataSort>Change (24h$)</TableHeaderColumn>
-              <TableHeaderColumn dataField='CHANGE24HOURPCT' columnClassName={ this.handlePriceChange } dataSort>Change (24h%)</TableHeaderColumn>
-              <TableHeaderColumn dataField='VOLUME24HOURTO' dataFormat={ this.handleFormatVolume } dataSort>Volume (24h$)</TableHeaderColumn>
-              <TableHeaderColumn dataField='LASTMARKET' dataSort>Exchange</TableHeaderColumn>
+              <TableHeaderColumn
+                dataField='FROMSYMBOL'
+                isKey dataSort>Symbol
+              </TableHeaderColumn>
+              <TableHeaderColumn
+                dataField='PRICE'
+                dataFormat={ this.handleFormatVolume }
+                columnClassName={ this.handlePriceDirection }
+                dataSort>Price
+              </TableHeaderColumn>
+              <TableHeaderColumn
+                dataField='CHANGE24HOUR'
+                columnClassName={ this.handlePriceChange }
+                dataSort>Change 24h $
+              </TableHeaderColumn>
+              <TableHeaderColumn
+                dataField='CHANGE24HOURPCT'
+                columnClassName={ this.handlePriceChange }
+                dataSort>Change 24h %
+              </TableHeaderColumn>
+              <TableHeaderColumn
+                dataField='VOLUME24HOURTO'
+                dataFormat={ this.handleFormatVolume }
+                dataSort>Volume 24h $
+              </TableHeaderColumn>
+              <TableHeaderColumn
+                dataField='LASTMARKET'
+                columnClassName={ 'exchange' }
+                dataSort>Exchange
+              </TableHeaderColumn>
             </BootstrapTable>
           </Tab>
           <Tab eventKey={ 2 } title='Coins'>Table of Coins</Tab>
